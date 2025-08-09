@@ -4,19 +4,30 @@ from firebase_admin import credentials, storage
 
 # Caminho absoluto para o arquivo de credenciais
 # Recomendo usar variável de ambiente, mas você também pode usar o nome diretamente
-BASE_DIR = os.path.dirname(__file__)
-SERVICE_ACCOUNT_KEY_PATH = os.path.join(BASE_DIR, 'projeto-advocacia-tales-firebase-adminsdk-fbsvc-969b4fefcf.json')
+
+
 
 # Identificador do projeto e bucket (ajuste conforme seu Firebase)
-FIREBASE_PROJECT_ID = 'projeto-advocacia-tales'
+
 STORAGE_BUCKET = 'projeto-advocacia-tales.appspot.com'
 
 # Inicialização do Firebase Admin SDK (evita reinicializações múltiplas)
 if not firebase_admin._apps:
-    cred = credentials.Certificate(SERVICE_ACCOUNT_KEY_PATH)
+    cred = credentials.Certificate({
+        "type": "service_account",
+        "project_id": os.environ.get("FIREBASE_PROJECT_ID"),
+        "private_key_id": os.environ.get("FIREBASE_PRIVATE_KEY_ID"),
+        "private_key": os.environ.get("FIREBASE_PRIVATE_KEY").replace("\\n", "\n"),
+        "client_email": os.environ.get("FIREBASE_CLIENT_EMAIL"),
+        "client_id": os.environ.get("FIREBASE_CLIENT_ID"),
+        "auth_uri": os.environ.get("FIREBASE_AUTH_URI"),
+        "token_uri": os.environ.get("FIREBASE_TOKEN_URI"),
+        "auth_provider_x509_cert_url": os.environ.get("FIREBASE_AUTH_PROVIDER_X509_CERT_URL"),
+        "client_x509_cert_url": os.environ.get("FIREBASE_CLIENT_X509_CERT_URL")
+    })
     firebase_admin.initialize_app(cred, {
-        'projectId': FIREBASE_PROJECT_ID,
-        'storageBucket': STORAGE_BUCKET
+        'projectId': os.environ.get("FIREBASE_PROJECT_ID"),
+        'storageBucket': os.environ.get("GOOGLE_CLOUD_BUCKET")
     })
 
 # Opcional: exporta o bucket para facilitar uso em outros arquivos
