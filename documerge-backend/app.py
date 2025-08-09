@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 #!/usr/bin/env python3
 """
 Aplicação Flask para Sistema de Advocacia
@@ -28,4 +31,3 @@ if __name__ == "__main__":
         port=port,
         debug=debug
     )
-
